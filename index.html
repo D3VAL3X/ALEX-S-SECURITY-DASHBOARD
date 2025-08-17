@@ -66,40 +66,28 @@
     const emailInput = document.getElementById("email");
     const passwordInput = document.getElementById("password");
 
+    const USER_DOC_ID = "YOUR_DOC_ID_HERE"; // <-- replace with your Firestore document ID
+
     loginBtn.addEventListener("click", async () => {
-      messageDiv.textContent = ""; // clear previous message
+      messageDiv.textContent = "";
       messageDiv.classList.remove("success");
 
       try {
-        const querySnapshot = await db.collection("users")
-          .where("email", "==", emailInput.value)
-          .get();
+        const docRef = db.collection("users").doc(Q5Nvv1hQLNY0AK2RgvAVuo1sh683);
+        const docSnap = await docRef.get();
 
-        if (querySnapshot.empty) {
-          messageDiv.textContent = "❌ No user found with that email.";
-          emailInput.value = "";
-          passwordInput.value = "";
-          return;
-        }
-
-        let loggedIn = false;
-
-        querySnapshot.forEach((doc) => {
-          const data = doc.data();
-          if (data.password === passwordInput.value) {
-            loggedIn = true;
+        if (docSnap.exists) {
+          const data = docSnap.data();
+          if (emailInput.value === data.email && passwordInput.value === data.password) {
+            messageDiv.textContent = "✅ Login successful!";
+            messageDiv.classList.add("success");
+            window.location.href = "dashboard.html"; // redirect on success
+          } else {
+            messageDiv.textContent = "❌ Wrong email or password.";
+            passwordInput.value = "";
           }
-        });
-
-        if (loggedIn) {
-          messageDiv.textContent = "✅ Login successful!";
-          messageDiv.classList.add("success");
-
-          // Redirect to dashboard.html instantly
-          window.location.href = "dashboard.html";
         } else {
-          messageDiv.textContent = "❌ Wrong password.";
-          passwordInput.value = "";
+          messageDiv.textContent = "❌ No user found in the database.";
         }
 
       } catch (error) {
