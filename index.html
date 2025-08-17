@@ -26,27 +26,17 @@
       text-transform: uppercase;
       margin-bottom: 30px;
     }
-    #message {
-      margin-top: 10px;
-      color: red;
-      font-weight: bold;
-    }
-    #message.success {
-      color: limegreen;
-    }
   </style>
 </head>
 <body>
   <h1>ALEX'S SECURITY DASHBOARD</h1>
-  <input type="text" id="email" placeholder="Email">
+  <input type="email" id="email" placeholder="Email">
   <input type="password" id="password" placeholder="Password">
   <button id="loginBtn">Login</button>
-  <div id="message"></div>
 
-  <!-- Firebase SDK (compat version) -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
   <script>
     // 🔹 Step 1: Initialize Firebase
     const firebaseConfig = {
@@ -59,56 +49,24 @@
       measurementId: "G-3ZK2886YWR"
     };
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+    const app = firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
 
-    // 🔹 Step 2: Your Firestore document ID (as a string!)
-    const USER_DOC_ID = "Q5Nvv1hQLNY0AK2RgvAVuo1sh683"; // Replace with your actual document ID
-
+    // 🔹 Step 2: Login Button Logic
     const loginBtn = document.getElementById("loginBtn");
-    const messageDiv = document.getElementById("message");
-    const emailInput = document.getElementById("email");
-    const passwordInput = document.getElementById("password");
-
     loginBtn.addEventListener("click", async () => {
-      messageDiv.textContent = "";
-      messageDiv.classList.remove("success");
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
 
       try {
-        const docRef = db.collection("users").doc(USER_DOC_ID);
-        const docSnap = await docRef.get();
-
-        if (docSnap.exists) {
-          const data = docSnap.data();
-          if (emailInput.value === data.email && passwordInput.value === data.password) {
-            messageDiv.textContent = "✅ Login successful!";
-            messageDiv.classList.add("success");
-            // Redirect after a short delay to show success message
-            setTimeout(() => {
-              window.location.href = "dashboard.html";
-            }, 500);
-          } else {
-            messageDiv.textContent = "❌ Wrong email or password.";
-            passwordInput.value = "";
-          }
-        } else {
-          messageDiv.textContent = "❌ No user found in the database.";
-        }
-
+        await auth.signInWithEmailAndPassword(email, password);
+        alert("✅ Login successful!");
+        window.location.href = "dashboard.html"; // Redirect after login
       } catch (error) {
-        console.error("Login error:", error);
-        messageDiv.textContent = "❌ Something went wrong. Check console.";
+        alert("❌ Login failed: " + error.message);
       }
-    });
-
-    // Optional: pressing Enter submits login
-    [emailInput, passwordInput].forEach(input => {
-      input.addEventListener("keypress", function(event) {
-        if (event.key === "Enter") {
-          loginBtn.click();
-        }
-      });
     });
   </script>
 </body>
 </html>
+
