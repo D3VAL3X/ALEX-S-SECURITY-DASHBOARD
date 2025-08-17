@@ -62,8 +62,8 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // 🔹 Step 2: Define your Firestore document ID (as a string!)
-    const USER_DOC_ID = "Q5Nvv1hQLNY0AK2RgvAVuo1sh683"; // Replace with your actual doc ID
+    // 🔹 Step 2: Your Firestore document ID (as a string!)
+    const USER_DOC_ID = "Q5Nvv1hQLNY0AK2RgvAVuo1sh683"; // Replace with your actual document ID
 
     const loginBtn = document.getElementById("loginBtn");
     const messageDiv = document.getElementById("message");
@@ -101,7 +101,7 @@
       }
     });
 
-    // Optional: allow pressing Enter to submit login
+    // Optional: pressing Enter submits login
     [emailInput, passwordInput].forEach(input => {
       input.addEventListener("keypress", function(event) {
         if (event.key === "Enter") {
@@ -112,4 +112,3 @@
   </script>
 </body>
 </html>
-
