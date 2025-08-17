@@ -26,6 +26,14 @@
       text-transform: uppercase;
       margin-bottom: 30px;
     }
+    #message {
+      margin-top: 10px;
+      color: red;
+      font-weight: bold;
+    }
+    #message.success {
+      color: limegreen;
+    }
   </style>
 </head>
 <body>
@@ -33,13 +41,13 @@
   <input type="text" id="email" placeholder="Email">
   <input type="password" id="password" placeholder="Password">
   <button id="loginBtn">Login</button>
+  <div id="message"></div>
 
   <!-- Firebase SDK (compat version) -->
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 
   <script>
-    // 🔹 Step 1: Initialize Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyDksDN6-E23F9ZLRtY8L2KMFTltnb02h04",
       authDomain: "alex-dashboard-af357.firebaseapp.com",
@@ -51,4 +59,63 @@
     };
 
     firebase.initializeApp(firebaseConfig);
-    const db = firebase.fi
+    const db = firebase.firestore();
+
+    const loginBtn = document.getElementById("loginBtn");
+    const messageDiv = document.getElementById("message");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+
+    loginBtn.addEventListener("click", async () => {
+      messageDiv.textContent = ""; // clear previous message
+      messageDiv.classList.remove("success");
+
+      try {
+        const querySnapshot = await db.collection("users")
+          .where("email", "==", emailInput.value)
+          .get();
+
+        if (querySnapshot.empty) {
+          messageDiv.textContent = "❌ No user found with that email.";
+          emailInput.value = "";
+          passwordInput.value = "";
+          return;
+        }
+
+        let loggedIn = false;
+
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          if (data.password === passwordInput.value) {
+            loggedIn = true;
+          }
+        });
+
+        if (loggedIn) {
+          messageDiv.textContent = "✅ Login successful!";
+          messageDiv.classList.add("success");
+
+          // Redirect to dashboard.html instantly
+          window.location.href = "dashboard.html";
+        } else {
+          messageDiv.textContent = "❌ Wrong password.";
+          passwordInput.value = "";
+        }
+
+      } catch (error) {
+        console.error("Login error:", error);
+        messageDiv.textContent = "❌ Something went wrong. Check console.";
+      }
+    });
+
+    // Optional: allow pressing Enter to submit login
+    [emailInput, passwordInput].forEach(input => {
+      input.addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+          loginBtn.click();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
