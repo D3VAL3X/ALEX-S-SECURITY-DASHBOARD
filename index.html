@@ -34,9 +34,9 @@
   <input type="password" id="password" placeholder="Password">
   <button id="loginBtn">Login</button>
 
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+  <!-- Firebase SDK (compat version) -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 
   <script>
     // 🔹 Step 1: Initialize Firebase
@@ -50,35 +50,5 @@
       measurementId: "G-3ZK2886YWR"
     };
 
-    const app = firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-
-    // 🔹 Step 2: Login Button Logic
-    const loginBtn = document.getElementById("loginBtn");
-    loginBtn.addEventListener("click", async () => {
-      const emailInput = document.getElementById("email").value;
-      const passwordInput = document.getElementById("password").value;
-
-      try {
-        const docRef = db.collection("users").doc("a5lN7MuekADiEi87Ghha"); // Your single user doc
-        const docSnap = await docRef.get();
-
-        if (docSnap.exists) {
-          const data = docSnap.data();
-          if (emailInput === data.email && passwordInput === data.password) {
-            // ✅ Login successful — redirect to dashboard.html
-            window.location.href = "dashboard.html";
-          } else {
-            alert("❌ Wrong email or password.");
-          }
-        } else {
-          alert("❌ No user found in the database.");
-        }
-      } catch (error) {
-        console.error("Error logging in:", error);
-        alert("❌ Something went wrong. Check the console.");
-      }
-    });
-  </script>
-</body>
-</html>
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.fi
