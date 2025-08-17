@@ -48,6 +48,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 
   <script>
+    // 🔹 Step 1: Initialize Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyDksDN6-E23F9ZLRtY8L2KMFTltnb02h04",
       authDomain: "alex-dashboard-af357.firebaseapp.com",
@@ -61,12 +62,13 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
+    // 🔹 Step 2: Define your Firestore document ID (as a string!)
+    const USER_DOC_ID = "Q5Nvv1hQLNY0AK2RgvAVuo1sh683"; // Replace with your actual doc ID
+
     const loginBtn = document.getElementById("loginBtn");
     const messageDiv = document.getElementById("message");
     const emailInput = document.getElementById("email");
     const passwordInput = document.getElementById("password");
-
-    const USER_DOC_ID = "Q5Nvv1hQLNY0AK2RgvAVuo1sh683"; // <-- replace with your Firestore document ID
 
     loginBtn.addEventListener("click", async () => {
       messageDiv.textContent = "";
@@ -81,7 +83,10 @@
           if (emailInput.value === data.email && passwordInput.value === data.password) {
             messageDiv.textContent = "✅ Login successful!";
             messageDiv.classList.add("success");
-            window.location.href = "dashboard.html"; // redirect on success
+            // Redirect after a short delay to show success message
+            setTimeout(() => {
+              window.location.href = "dashboard.html";
+            }, 500);
           } else {
             messageDiv.textContent = "❌ Wrong email or password.";
             passwordInput.value = "";
@@ -107,3 +112,4 @@
   </script>
 </body>
 </html>
+
